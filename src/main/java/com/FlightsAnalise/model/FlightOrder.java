@@ -14,16 +14,16 @@ public class FlightOrder {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name = "flyFrom", nullable = false)
+    @Column(name = "fly_from", nullable = false)
     private String flyFrom;
 
-    @Column(name = "flyTo", nullable = false)
+    @Column(name = "fly_to", nullable = false)
     private String flyTo;
 
-    @Column(name = "dateFrom", nullable = false)
+    @Column(name = "date_from", nullable = false)
     private String dateFrom;
 
-    @Column(name = "dateTo", nullable = false)
+    @Column(name = "date_to", nullable = false)
     private String dateTo;
 
     @Column(name = "adults")
@@ -32,7 +32,10 @@ public class FlightOrder {
     @Column(name = "children")
     private int children = 0;
 
-    @Column(name = "createdAt")
+    @Column(name = "currency")
+    private Currency currency = Currency.EUR;
+
+    @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @PrePersist
