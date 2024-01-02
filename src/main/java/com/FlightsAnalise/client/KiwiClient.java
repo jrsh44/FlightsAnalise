@@ -1,0 +1,18 @@
+package com.FlightsAnalise.client;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.*;
+
+@FeignClient(
+        name="KiwiClient",
+        url="https://api.tequila.kiwi.com/v2")
+public interface KiwiClient {
+
+    @GetMapping("/search")
+    JsonNode search(@RequestHeader("apikey") String apikey,
+                    @RequestParam("fly_from") String flyFrom,
+                    @RequestParam("fly_to") String flyTo,
+                    @RequestParam("date_from") String dateFrom,
+                    @RequestParam("date_to") String dateTo);
+}
