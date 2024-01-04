@@ -6,6 +6,8 @@ import com.FlightsAnalise.exceptions.ResourceNotFoundException;
 import com.FlightsAnalise.exceptions.UnprocessableEntityException;
 import com.FlightsAnalise.model.FlightOrder;
 import com.FlightsAnalise.repository.OrderRepository;
+import com.FlightsAnalise.utils.JsonUtil;
+import com.fasterxml.jackson.databind.JsonNode;
 import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,8 +34,9 @@ public class OrderServiceImpl implements OrderService {
     public FlightOrder add(FlightOrder flightOrder) {
         checkVariables(flightOrder);
         checkDates(flightOrder.getDateFrom(), flightOrder.getDateTo());
+        JsonNode data;
         try{
-            kiwiClient.search(
+            data = kiwiClient.search(
                     apikey,
                     flightOrder.getFlyFrom(),
                     flightOrder.getFlyTo(),
@@ -44,6 +47,7 @@ public class OrderServiceImpl implements OrderService {
         } catch (Exception ex) {
             throw new BadRequestException("Unable to validate order");
         }
+        System.out.println(JsonUtil.convertSnakeCaseToCamelCase(data));
         return orderRepository.save(flightOrder);
     }
 
