@@ -27,6 +27,9 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private KiwiService kiwiService;
 
+    @Autowired
+    private FlightService flightService;
+
     @Override
     public FlightOrder add(FlightOrder flightOrder) {
 
@@ -59,4 +62,7 @@ public class OrderServiceImpl implements OrderService {
     public void delById(int id) {
         orderRepository.delete(getById(id));
     }
+
+    @Override
+    public void delAll() { orderRepository.deleteAll(); }
 }

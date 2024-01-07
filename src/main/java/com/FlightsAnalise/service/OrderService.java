@@ -12,5 +12,7 @@ public interface OrderService {
     FlightOrder getById(int id);
 
     void delById(int id);
+
+    void delAll();
 }
 
