@@ -21,8 +21,8 @@ public class SingleAnalise {
     @Column(name = "average_price")
     private double averagePrice;
 
-//    @Column(name = "average_duration")
-//    private double averageDuration;
+    @Column(name = "median_nights_in_dest")
+    private int medianNightsInDest;
 
     @Column(name = "cabin")
     private String cabin;
