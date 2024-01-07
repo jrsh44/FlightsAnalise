@@ -19,5 +19,6 @@ public class KiwiData {
     @JsonProperty("fx_rate")
     protected double fxRate;
     protected ArrayList<Flight> data;
-    protected int _results;
+    @JsonProperty("_results")
+    protected int results;
 }
