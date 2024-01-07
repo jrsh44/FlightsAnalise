@@ -13,6 +13,7 @@ public class FinalAnalise {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    // Maybe unnecessary
     @ManyToOne
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private FlightOrder flightOrder;
@@ -31,9 +32,6 @@ public class FinalAnalise {
 
     @Column(name = "price_change")
     private double priceChange;
-
-//    @Column(name = "average_duration")
-//    private double averageDuration;
 
     @Column(name = "start_amount")
     private double startAmount;

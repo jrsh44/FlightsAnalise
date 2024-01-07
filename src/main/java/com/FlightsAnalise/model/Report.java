@@ -13,7 +13,7 @@ public class Report {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private FlightOrder flightOrder;
 
@@ -40,19 +40,19 @@ public class Report {
 
     @OneToOne
     @JoinColumn(name = "economy_analise", referencedColumnName = "id")
-    private FinalAnalise enocomyAnalise;
+    private FinalAnalise economyAnalise;
 
     @OneToOne
     @JoinColumn(name = "economy_premium_analise", referencedColumnName = "id")
     private FinalAnalise economyPremiumAnalise;
 
     @OneToOne
-    @JoinColumn(name = "buisness_analise", referencedColumnName = "id")
-    private FinalAnalise buisnessAnalise;
+    @JoinColumn(name = "business_analise", referencedColumnName = "id")
+    private FinalAnalise businessAnalise;
 
     @OneToOne
     @JoinColumn(name = "first_class_analise", referencedColumnName = "id")
-    private FinalAnalise first_class_analise;
+    private FinalAnalise firstClassAnalise;
 
 
     @Column(name = "created_at")
