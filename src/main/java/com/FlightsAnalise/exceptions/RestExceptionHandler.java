@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class RestExceptionHandler {
 
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException ex) {
+    @ExceptionHandler(BadBuilderException.class)
+    public ResponseEntity<ErrorResponse> handleBadBuilderException(BadBuilderException ex) {
         ErrorResponse errorResponse = new ErrorResponse("FA-001", ex.getMessage());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }

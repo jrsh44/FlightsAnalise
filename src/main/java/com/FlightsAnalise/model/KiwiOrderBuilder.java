@@ -4,6 +4,10 @@ import com.FlightsAnalise.exceptions.BadBuilderException;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Objects;
+
 @Getter @Setter
 public class KiwiOrderBuilder {
     private String flyFrom;
@@ -23,6 +27,8 @@ public class KiwiOrderBuilder {
         this.flyTo = flyTo;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
+        checkVariables();
+        checkDates(dateFrom, dateTo);
     }
     public KiwiOrderBuilder adults(int adults){
         if(adults <= 0){
@@ -64,6 +70,29 @@ public class KiwiOrderBuilder {
         }
         this.nightsInDestTo = value;
         return this;
+    }
+
+    private void checkDates(String firstDate, String secondDate) {
+        LocalDate fDate, sDate;
+        DateTimeFormatter formatter;
+        try {
+            formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            fDate = LocalDate.parse(firstDate, formatter);
+            sDate = LocalDate.parse(secondDate, formatter);
+        } catch (Exception ex) {
+            throw new BadBuilderException("Date must be in the form of dd/mm/rrrr");
+        }
+        if (!(fDate.isAfter(LocalDate.now().minusDays(1)) && sDate.isAfter(LocalDate.now().minusDays(1)))) {
+            throw new BadBuilderException("Date mustn't be earlier than: " + LocalDate.now().format(formatter));
+        }
+        if (fDate.isAfter(sDate)) {
+            throw new BadBuilderException("Variable 'dateTo' mustn't contain date earlier than 'dateFrom");
+        }
+    }
+    private void checkVariables(){
+        if (Objects.isNull(this.dateFrom) || Objects.isNull(this.dateTo) || Objects.isNull(this.flyFrom) || Objects.isNull(this.flyTo)) {
+            throw new BadBuilderException("Required parameters: flyFrom, flyTo, dateFrom, dateTo.");
+        }
     }
 
 }
