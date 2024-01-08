@@ -14,11 +14,11 @@ import java.util.ArrayList;
 @NoArgsConstructor
 public class FareLocks{
     @JsonProperty("EUR")
-    protected ArrayList<Object> eUR;
+    protected ArrayList<Object> eur;
     @JsonProperty("USD")
-    protected ArrayList<Object> uSD;
+    protected ArrayList<Object> usd;
     @JsonProperty("GBP")
-    protected ArrayList<Object> gBP;
+    protected ArrayList<Object> gbp;
     @JsonProperty("PLN")
-    protected ArrayList<Object> pLN;
+    protected ArrayList<Object> pln;
 }

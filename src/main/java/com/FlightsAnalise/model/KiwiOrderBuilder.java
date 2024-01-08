@@ -8,7 +8,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-@Getter @Setter
+@Getter
+@Setter
 public class KiwiOrderBuilder {
     private String flyFrom;
     private String flyTo;
@@ -60,6 +61,9 @@ public class KiwiOrderBuilder {
     }
 
     public KiwiOrderBuilder nightsInDestFrom(int value){
+        if (value < 0){
+            throw new BadBuilderException("Nights range cannot start from negative value!");
+        }
         this.nightsInDestFrom = value;
         return this;
     }

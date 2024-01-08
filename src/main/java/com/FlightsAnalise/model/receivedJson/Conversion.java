@@ -12,11 +12,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Conversion{
     @JsonProperty("EUR")
-    protected double eUR;
+    protected double eur;
     @JsonProperty("USD")
-    protected int uSD;
+    protected int usd;
     @JsonProperty("GBP")
-    protected int gBP;
+    protected int gbp;
     @JsonProperty("PLN")
-    protected int pLN;
+    protected int pln;
 }

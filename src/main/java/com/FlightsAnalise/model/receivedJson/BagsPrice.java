@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class BagsPrice{
     @JsonProperty("1")
-    protected double _1;
+    protected double bag1Price;
     @JsonProperty("2")
-    protected  double _2;
+    protected  double bag2Price;
 }

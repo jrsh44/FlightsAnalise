@@ -22,7 +22,7 @@ public class KiwiServiceImpl implements KiwiService{
 
     @Override
     public KiwiData search(KiwiOrderBuilder kiwiOrder){
-        JsonNode jsonNode = null;
+        JsonNode jsonNode;
 
         try{
             jsonNode =  kiwiClient.search(
