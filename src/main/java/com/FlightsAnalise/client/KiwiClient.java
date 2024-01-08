@@ -14,5 +14,12 @@ public interface KiwiClient {
                     @RequestParam("fly_from") String flyFrom,
                     @RequestParam("fly_to") String flyTo,
                     @RequestParam("date_from") String dateFrom,
-                    @RequestParam("date_to") String dateTo);
+                    @RequestParam("date_to") String dateTo,
+                    @RequestParam("adults") int adults,
+                    @RequestParam("children") int children,
+                    @RequestParam("curr") String curr,
+                    @RequestParam("max_stopovers") int maxStopovers,
+                    @RequestParam("nights_in_dst_from") int maxInDestFrom,
+                    @RequestParam("nights_in_dst_to") int maxInDestTo,
+                    @RequestParam("limit") int limit);
 }
