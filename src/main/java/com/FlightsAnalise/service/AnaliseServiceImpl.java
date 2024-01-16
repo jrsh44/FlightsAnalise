@@ -97,3 +97,4 @@ public class AnaliseServiceImpl implements AnaliseService{
         singleAnaliseRepository.deleteAll();
     }
 }
+

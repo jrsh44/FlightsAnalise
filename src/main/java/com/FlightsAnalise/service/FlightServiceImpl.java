@@ -15,6 +15,7 @@ public class FlightServiceImpl implements FlightService{
     @Autowired
     private FlightRepository flightRepository;
 
+
     @Override
     public List<SingleFlight> getAll() {
         return flightRepository.findAll();
