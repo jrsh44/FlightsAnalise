@@ -1,6 +1,7 @@
 package com.FlightsAnalise.service;
 
 import com.FlightsAnalise.model.FlightOrder;
+import com.FlightsAnalise.model.KiwiOrderBuilder;
 import com.FlightsAnalise.model.SingleAnalise;
 import com.FlightsAnalise.model.receivedJson.Flight;
 import com.FlightsAnalise.model.receivedJson.KiwiData;
@@ -9,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class AnaliseServiceImpl implements AnaliseService{
@@ -17,15 +21,40 @@ public class AnaliseServiceImpl implements AnaliseService{
     private FlightService flightService;
 
     @Autowired
+    private KiwiService kiwiService;
+
+    @Autowired
     private SingleAnaliseRepository singleAnaliseRepository;
 
     @Override
-    public List<SingleAnalise> getAllSingleAnalise() {
-        return singleAnaliseRepository.findAll();
+    public void setAnalise(FlightOrder flightOrder) {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
+        scheduler.scheduleAtFixedRate(() -> {
+            addSingleAnalise(flightOrder);
+        }, 1, flightOrder.getTestTimeGap(), TimeUnit.MINUTES);
+        scheduler.schedule(() -> {
+            addFinalAnalise(flightOrder);
+            scheduler.shutdown();
+        }, (long) flightOrder.getTestTimeGap() * flightOrder.getNumOfTests(), TimeUnit.MINUTES);
     }
 
-    @Override
-    public SingleAnalise addSingleAnalise(FlightOrder flightOrder, KiwiData kiwiData) {
+    // TODO - FINAL ANALISE
+    private void addFinalAnalise(FlightOrder flightOrder) {
+        System.out.println("FINAL ANALISE");
+    }
+
+    private void addSingleAnalise(FlightOrder flightOrder) {
+
+        KiwiData kiwiData = kiwiService.search(new KiwiOrderBuilder(
+                flightOrder.getFlyFrom(),
+                flightOrder.getFlyTo(),
+                flightOrder.getDateFrom(),
+                flightOrder.getDateTo(),
+                flightOrder.getNumOfTests(),
+                flightOrder.getTestTimeGap())
+                .adults(flightOrder.getAdults())
+                .children(flightOrder.getChildren()));
+
         SingleAnalise singleAnalise = new SingleAnalise();
         singleAnalise.setFlightOrder(flightOrder);
 
@@ -53,9 +82,16 @@ public class AnaliseServiceImpl implements AnaliseService{
                         kiwiData.getData().get(kiwiData.getData().size() - 1)
                 )
         );
-        return singleAnaliseRepository.save(singleAnalise);
+        singleAnaliseRepository.save(singleAnalise);
     }
 
+    // TODO - remove
+    @Override
+    public List<SingleAnalise> getAllSingleAnalise() {
+        return singleAnaliseRepository.findAll();
+    }
+
+    // TODO - remove
     @Override
     public void deleteAllSingleAnalise() {
         singleAnaliseRepository.deleteAll();

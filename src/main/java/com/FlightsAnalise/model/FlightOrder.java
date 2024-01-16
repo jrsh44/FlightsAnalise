@@ -35,11 +35,11 @@ public class FlightOrder {
     @Column(name = "currency")
     private Currency currency = Currency.EUR;
 
-    @Column(name = "num_of_tests")
-    private int numOfTests = 0;
+    @Column(name = "num_of_tests", nullable = false)
+    private int numOfTests;
 
-    @Column(name = "test_time_gap")
-    private int testTimeGap = 0;
+    @Column(name = "test_time_gap", nullable = false)
+    private int testTimeGap;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

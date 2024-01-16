@@ -15,6 +15,8 @@ public class KiwiOrderBuilder {
     private String flyTo;
     private String dateFrom;
     private String dateTo;
+    private int numOfTests;
+    private int testTimeGap;
     private int adults = 1;
     private int children = 0;
     private Currency curr = Currency.EUR;
@@ -23,11 +25,19 @@ public class KiwiOrderBuilder {
     private int nightsInDestTo = 10;
     private int limit = 20;
 
-    public KiwiOrderBuilder(String flyFrom, String flyTo, String dateFrom, String dateTo){
+    public KiwiOrderBuilder(String flyFrom, String flyTo, String dateFrom, String dateTo, int numOfTests, int testTimeGap){
         this.flyFrom = flyFrom;
         this.flyTo = flyTo;
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
+        if(testTimeGap <= 0){
+            throw new BadBuilderException("There must be at least 1 minute gap between tests!");
+        }
+        this.testTimeGap = testTimeGap;
+        if(numOfTests <= 0){
+            throw new BadBuilderException("There must be at least 1 test!");
+        }
+        this.numOfTests = numOfTests;
         checkVariables();
         checkDates(dateFrom, dateTo);
     }
@@ -94,8 +104,8 @@ public class KiwiOrderBuilder {
         }
     }
     private void checkVariables(){
-        if (Objects.isNull(this.dateFrom) || Objects.isNull(this.dateTo) || Objects.isNull(this.flyFrom) || Objects.isNull(this.flyTo)) {
-            throw new BadBuilderException("Required parameters: flyFrom, flyTo, dateFrom, dateTo.");
+        if (Objects.isNull(this.dateFrom) || Objects.isNull(this.dateTo) || Objects.isNull(this.flyFrom) || Objects.isNull(this.flyTo) || Objects.isNull(this.numOfTests) || Objects.isNull(this.testTimeGap)) {
+            throw new BadBuilderException("Required parameters: flyFrom, flyTo, dateFrom, dateTo, numOfTests, testTimeGap.");
         }
     }
 
