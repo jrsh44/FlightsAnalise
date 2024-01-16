@@ -1,4 +1,4 @@
-package com.FlightsAnalise.service;
+package com.FlightsAnalise.service.impl;
 
 import com.FlightsAnalise.exceptions.BadBuilderException;
 import com.FlightsAnalise.exceptions.ResourceNotFoundException;
@@ -6,6 +6,9 @@ import com.FlightsAnalise.model.FlightOrder;
 import com.FlightsAnalise.model.KiwiOrderBuilder;
 import com.FlightsAnalise.model.receivedJson.KiwiData;
 import com.FlightsAnalise.repository.OrderRepository;
+import com.FlightsAnalise.service.AnaliseService;
+import com.FlightsAnalise.service.KiwiService;
+import com.FlightsAnalise.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

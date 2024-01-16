@@ -1,4 +1,4 @@
-package com.FlightsAnalise.service;
+package com.FlightsAnalise.service.impl;
 
 import com.FlightsAnalise.model.FlightOrder;
 import com.FlightsAnalise.model.KiwiOrderBuilder;
@@ -6,6 +6,9 @@ import com.FlightsAnalise.model.SingleAnalise;
 import com.FlightsAnalise.model.receivedJson.Flight;
 import com.FlightsAnalise.model.receivedJson.KiwiData;
 import com.FlightsAnalise.repository.SingleAnaliseRepository;
+import com.FlightsAnalise.service.AnaliseService;
+import com.FlightsAnalise.service.FlightService;
+import com.FlightsAnalise.service.KiwiService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +18,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class AnaliseServiceImpl implements AnaliseService{
+public class AnaliseServiceImpl implements AnaliseService {
 
     @Autowired
     private FlightService flightService;
