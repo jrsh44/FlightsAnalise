@@ -9,6 +9,7 @@ import com.FlightsAnalise.repository.SingleAnaliseRepository;
 import com.FlightsAnalise.service.AnaliseService;
 import com.FlightsAnalise.service.FlightService;
 import com.FlightsAnalise.service.KiwiService;
+import com.FlightsAnalise.service.scheduler.ScheduledAnalise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,21 +33,18 @@ public class AnaliseServiceImpl implements AnaliseService {
     @Override
     public void setAnalise(FlightOrder flightOrder) {
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
-        scheduler.scheduleAtFixedRate(() -> {
-            addSingleAnalise(flightOrder);
-        }, 1, flightOrder.getTestTimeGap(), TimeUnit.MINUTES);
-        scheduler.schedule(() -> {
-            addFinalAnalise(flightOrder);
-            scheduler.shutdown();
-        }, (long) flightOrder.getTestTimeGap() * flightOrder.getNumOfTests(), TimeUnit.MINUTES);
+        scheduler.scheduleAtFixedRate(new ScheduledAnalise(flightOrder, this), 0, flightOrder.getTestTimeGap(), TimeUnit.MINUTES);
+        scheduler.schedule(scheduler::shutdown, (long) flightOrder.getTestTimeGap() * flightOrder.getNumOfTests(), TimeUnit.MINUTES);
     }
 
     // TODO - FINAL ANALISE
-    private void addFinalAnalise(FlightOrder flightOrder) {
+    @Override
+    public void addFinalAnalise(FlightOrder flightOrder) {
         System.out.println("FINAL ANALISE");
     }
 
-    private void addSingleAnalise(FlightOrder flightOrder) {
+    @Override
+    public void addSingleAnalise(FlightOrder flightOrder) {
 
         KiwiData kiwiData = kiwiService.search(new KiwiOrderBuilder(
                 flightOrder.getFlyFrom(),

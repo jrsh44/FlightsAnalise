@@ -5,12 +5,11 @@ import com.FlightsAnalise.model.SingleAnalise;
 
 import java.util.List;
 
-public interface AnaliseService {
+public interface AnaliseService extends ScheduledAnaliseService {
     List<SingleAnalise> getAllSingleAnalise();
 
     void setAnalise(FlightOrder flightOrder);
 
     void deleteAllSingleAnalise();
-
 
 }
