@@ -10,3 +10,10 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+feign:
+  client:
+    config:
+      default:
+        connectTimeout: 60000
+        readTimeout: 60000
+        writeTimeout: 60000

@@ -26,23 +26,42 @@ public class KiwiServiceImpl implements KiwiService {
         JsonNode jsonNode;
 
         try{
-            jsonNode =  kiwiClient.search(
-                    apikey,
-                    kiwiOrder.getFlyFrom(),
-                    kiwiOrder.getFlyTo(),
-                    kiwiOrder.getDateFrom(),
-                    kiwiOrder.getDateTo(),
-                    kiwiOrder.getAdults(),
-                    kiwiOrder.getChildren(),
-                    kiwiOrder.getCurr().toString(),
-                    kiwiOrder.getMaxStopovers(),
-                    kiwiOrder.getNightsInDestFrom(),
-                    kiwiOrder.getNightsInDestTo(),
-                    kiwiOrder.getLimit()
-            );
+            if (kiwiOrder.getCabin() == null) {
+                jsonNode = kiwiClient.search(
+                        apikey,
+                        kiwiOrder.getFlyFrom(),
+                        kiwiOrder.getFlyTo(),
+                        kiwiOrder.getDateFrom(),
+                        kiwiOrder.getDateTo(),
+                        kiwiOrder.getAdults(),
+                        kiwiOrder.getChildren(),
+                        kiwiOrder.getCurr().toString(),
+                        kiwiOrder.getMaxStopovers(),
+                        kiwiOrder.getNightsInDestFrom(),
+                        kiwiOrder.getNightsInDestTo(),
+                        kiwiOrder.getLimit()
+                );
+            } else {
+                jsonNode = kiwiClient.search(
+                        apikey,
+                        kiwiOrder.getFlyFrom(),
+                        kiwiOrder.getFlyTo(),
+                        kiwiOrder.getDateFrom(),
+                        kiwiOrder.getDateTo(),
+                        kiwiOrder.getAdults(),
+                        kiwiOrder.getChildren(),
+                        kiwiOrder.getCurr().toString(),
+                        kiwiOrder.getMaxStopovers(),
+                        kiwiOrder.getNightsInDestFrom(),
+                        kiwiOrder.getNightsInDestTo(),
+                        kiwiOrder.getLimit(),
+                        kiwiOrder.getCabin().label
+                );
+            }
         } catch (FeignException.UnprocessableEntity ex) {
             throw new UnprocessableEntityException("Couldn't find given location");
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             throw new BadBuilderException("Unable to validate order");
         }
 
