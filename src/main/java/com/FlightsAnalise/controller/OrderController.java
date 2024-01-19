@@ -1,9 +1,6 @@
 package com.FlightsAnalise.controller;
 
-import com.FlightsAnalise.model.FlightOrder;
-import com.FlightsAnalise.model.KiwiOrderBuilder;
-import com.FlightsAnalise.model.SingleAnalise;
-import com.FlightsAnalise.model.SingleFlight;
+import com.FlightsAnalise.model.*;
 import com.FlightsAnalise.service.AnaliseService;
 import com.FlightsAnalise.service.FlightService;
 import com.FlightsAnalise.service.KiwiService;
@@ -104,6 +101,32 @@ public class OrderController {
         analiseService.deleteAllSingleAnalise();
         //Delete also this bcs if there are no analyses there shouldn't be any flights in flight repo
         flightService.delAll();
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("test")
+    public ResponseEntity<Void> testKiwiTimeout(@RequestBody FlightOrder flightOrder) {
+        kiwiService.search(new KiwiOrderBuilder(
+                flightOrder.getFlyFrom(),
+                flightOrder.getFlyTo(),
+                flightOrder.getDateFrom(),
+                flightOrder.getDateTo(),
+                flightOrder.getNumOfTests(),
+                flightOrder.getTestTimeGap())
+                .adults(flightOrder.getAdults())
+                .children(flightOrder.getChildren())
+                .cabin(Cabin.PREMIUM_ECONOMY));
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("final")
+    public ResponseEntity<List<FinalAnalise>> getAllFinalAnalyses(){
+        return ResponseEntity.ok(analiseService.getAllFinalAnalise());
+    }
+
+    @DeleteMapping("final")
+    public ResponseEntity<Void> deleteAllFinalAnalyses(){
+        analiseService.deleteAllFinalAnalise();
         return ResponseEntity.ok().build();
     }
 }

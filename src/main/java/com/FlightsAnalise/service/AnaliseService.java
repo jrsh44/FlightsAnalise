@@ -1,5 +1,6 @@
 package com.FlightsAnalise.service;
 
+import com.FlightsAnalise.model.FinalAnalise;
 import com.FlightsAnalise.model.FlightOrder;
 import com.FlightsAnalise.model.SingleAnalise;
 
@@ -11,5 +12,9 @@ public interface AnaliseService extends ScheduledAnaliseService {
     void setAnalise(FlightOrder flightOrder);
 
     void deleteAllSingleAnalise();
+
+    List<FinalAnalise> getAllFinalAnalise();
+
+    void deleteAllFinalAnalise();
 
 }
