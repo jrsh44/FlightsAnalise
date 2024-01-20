@@ -16,7 +16,6 @@ public class FlightServiceImpl implements FlightService {
     @Autowired
     private FlightRepository flightRepository;
 
-
     @Override
     public List<SingleFlight> getAll() {
         return flightRepository.findAll();
@@ -51,7 +50,7 @@ public class FlightServiceImpl implements FlightService {
     }
 
     @Override
-    public void delAll(){
+    public void delAll() {
         flightRepository.deleteAll();
     }
 }
