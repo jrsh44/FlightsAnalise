@@ -14,9 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class AnaliseServiceImpl implements AnaliseService {
@@ -32,9 +29,7 @@ public class AnaliseServiceImpl implements AnaliseService {
 
     @Override
     public void setAnalise(FlightOrder flightOrder) {
-        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
-        scheduler.scheduleAtFixedRate(new ScheduledAnalise(flightOrder, this), 0, flightOrder.getTestTimeGap(), TimeUnit.MINUTES);
-        scheduler.schedule(scheduler::shutdown, (long) flightOrder.getTestTimeGap() * flightOrder.getNumOfTests(), TimeUnit.MINUTES);
+        new ScheduledAnalise(flightOrder, this);
     }
 
     // TODO - FINAL ANALISE
