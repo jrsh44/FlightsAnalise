@@ -39,82 +39,84 @@ public class AnaliseServiceImpl implements AnaliseService {
     // TODO - FINAL ANALISE
     @Override
     public void addFinalAnalise(FlightOrder flightOrder, Cabin cabin) {
-        FinalAnalise finalAnalise = new FinalAnalise();
 
-        //Setting flightOrder
-        finalAnalise.setFlightOrder(flightOrder);
-
-        //Setting cabin
-        finalAnalise.setCabin(cabin.label);
-
-        //Get first and last analise (Nw czy wgl potrzebny ten throw tu)
-        SingleAnalise firstAnalise = singleAnaliseRepository.findAll()
+        boolean isCabinExist = singleAnaliseRepository.findAll()
                 .stream()
                 .filter(s -> s.getFlightOrder().getId() == flightOrder.getId())
-                .filter(s -> s.getCabin().equals(cabin.label))
-                .min(Comparator.comparing(SingleAnalise::getCreatedAt))
-                .orElseThrow(() -> new GotNullException("Didn't get any single analise for order:" + flightOrder.getId() + " for cabin:" + cabin));
+                .anyMatch(s -> s.getCabin().equals(cabin.label));
 
-        SingleAnalise lastAnalise = singleAnaliseRepository.findAll()
-                .stream()
-                .filter(s -> s.getFlightOrder().getId() == flightOrder.getId())
-                .filter(s -> s.getCabin().equals(cabin.label))
-                .max(Comparator.comparing(SingleAnalise::getCreatedAt))
-                .orElseThrow(() -> new GotNullException("Didn't get any single analise for order:" + flightOrder.getId() + " for cabin:" + cabin));
+        if (isCabinExist) {
+            FinalAnalise finalAnalise = new FinalAnalise();
 
-        if(firstAnalise.getBestOffer() == null){
-            throw new GotNullException("Didn't get any offer for order" + flightOrder.getId() + " for cabin:" + cabin);
+            //Setting flightOrder
+            finalAnalise.setFlightOrder(flightOrder);
+
+            //Setting cabin
+            finalAnalise.setCabin(cabin.label);
+
+            //Get first and last analise (Nw czy wgl potrzebny ten throw tu)
+            SingleAnalise firstAnalise = singleAnaliseRepository.findAll()
+                    .stream()
+                    .filter(s -> s.getFlightOrder().getId() == flightOrder.getId())
+                    .filter(s -> s.getCabin().equals(cabin.label))
+                    .min(Comparator.comparing(SingleAnalise::getCreatedAt))
+                    .orElseThrow(() -> new GotNullException("Didn't get any single analise for order:" + flightOrder.getId() + " for cabin:" + cabin));
+
+            SingleAnalise lastAnalise = singleAnaliseRepository.findAll()
+                    .stream()
+                    .filter(s -> s.getFlightOrder().getId() == flightOrder.getId())
+                    .filter(s -> s.getCabin().equals(cabin.label))
+                    .max(Comparator.comparing(SingleAnalise::getCreatedAt))
+                    .orElseThrow(() -> new GotNullException("Didn't get any single analise for order:" + flightOrder.getId() + " for cabin:" + cabin));
+
+            //Setting start price (Taking from best offer)
+            finalAnalise.setStartPrice(firstAnalise.getBestOffer().getPrice());
+
+            //Setting end price (also from best offer)
+            finalAnalise.setEndPrice(lastAnalise.getBestOffer().getPrice());
+
+            //Setting averagePrice (niestety nie do końca average, bo to średnia ze średnich)
+            //Nie da sie inaczej, bo nie ma polaczenia flights <-> flightOrder (flights z Flights Repository)
+            finalAnalise.setAveragePrice(singleAnaliseRepository.findAll()
+                    .stream()
+                    .filter(s -> s.getFlightOrder().getId() == flightOrder.getId())
+                    .filter(s -> s.getCabin().equals(cabin.label))
+                    .mapToDouble(SingleAnalise::getAveragePrice)
+                    .average()
+                    .orElse(0.0));
+
+            //Setting priceChange
+            finalAnalise.setPriceChange(finalAnalise.getEndPrice() - finalAnalise.getStartPrice());
+
+            //Setting startAmount
+            finalAnalise.setStartAmount(firstAnalise.getAmount());
+
+            //Setting endAmount
+            finalAnalise.setEndAmount(lastAnalise.getAmount());
+
+            //Setting amountChange
+            finalAnalise.setAmountChange(finalAnalise.getEndAmount() - finalAnalise.getStartAmount());
+
+            //Setting bestOffer
+            finalAnalise.setBestOffer(singleAnaliseRepository.findAll()
+                    .stream()
+                    .filter(s -> s.getFlightOrder().getId() == flightOrder.getId())
+                    .filter(s -> s.getCabin().equals(cabin.label))
+                    .map(SingleAnalise::getBestOffer)
+                    .min(Comparator.comparing(SingleFlight::getPrice))
+                    .get());
+
+            //Setting worstOffer
+            finalAnalise.setWorstOffer(singleAnaliseRepository.findAll()
+                    .stream()
+                    .filter(s -> s.getFlightOrder().getId() == flightOrder.getId())
+                    .filter(s -> s.getCabin().equals(cabin.label))
+                    .map(SingleAnalise::getWorstOffer)
+                    .max(Comparator.comparing(SingleFlight::getPrice))
+                    .get());
+
+            finalAnaliseRepository.save(finalAnalise);
         }
-        //Setting start price (Taking from best offer)
-        finalAnalise.setStartPrice(firstAnalise.getBestOffer().getPrice());
-
-        //Setting end price (also from best offer)
-        finalAnalise.setEndPrice(lastAnalise.getBestOffer().getPrice());
-
-        //W powyższych settingach moze wywalic null pointer exception (i wywali pewnie), bo jesli nic nie znalazlo dla
-        // danej klasy lotu to nie bedzie best i worst offer, czyli getPrice nie mozna zrobic
-
-        //Setting averagePrice (niestety nie do końca average, bo to średnia ze średnich)
-        //Nie da sie inaczej, bo nie ma polaczenia flights <-> flightOrder (flights z Flights Repository)
-        finalAnalise.setAveragePrice(singleAnaliseRepository.findAll()
-                .stream()
-                .filter(s -> s.getFlightOrder().getId() == flightOrder.getId())
-                .filter(s -> s.getCabin().equals(cabin.label))
-                .mapToDouble(SingleAnalise::getAveragePrice)
-                .average()
-                .orElse(0.0));
-
-        //Setting priceChange
-        finalAnalise.setPriceChange(finalAnalise.getEndPrice() - finalAnalise.getStartPrice());
-
-        //Setting startAmount
-        finalAnalise.setStartAmount(firstAnalise.getAmount());
-
-        //Setting endAmount
-        finalAnalise.setEndAmount(lastAnalise.getAmount());
-
-        //Setting amountChange
-        finalAnalise.setAmountChange(finalAnalise.getEndAmount() - finalAnalise.getStartAmount());
-
-        //Setting bestOffer
-        finalAnalise.setBestOffer(singleAnaliseRepository.findAll()
-                .stream()
-                .filter(s -> s.getFlightOrder().getId() == flightOrder.getId())
-                .filter(s -> s.getCabin().equals(cabin.label))
-                .map(SingleAnalise::getBestOffer)
-                .min(Comparator.comparing(SingleFlight::getPrice))
-                .get());
-
-        //Setting worstOffer
-        finalAnalise.setWorstOffer(singleAnaliseRepository.findAll()
-                .stream()
-                .filter(s -> s.getFlightOrder().getId() == flightOrder.getId())
-                .filter(s -> s.getCabin().equals(cabin.label))
-                .map(SingleAnalise::getWorstOffer)
-                .max(Comparator.comparing(SingleFlight::getPrice))
-                .get());
-
-        finalAnaliseRepository.save(finalAnalise);
     }
 
     @Override
@@ -131,34 +133,37 @@ public class AnaliseServiceImpl implements AnaliseService {
                 .children(flightOrder.getChildren())
                 .cabin(cabin));
 
-        SingleAnalise singleAnalise = new SingleAnalise();
-        singleAnalise.setFlightOrder(flightOrder);
+        if (!kiwiData.getData().isEmpty()) {
 
-        //Calculate average price
-        singleAnalise.setAveragePrice(kiwiData.getData().stream()
-                .mapToDouble(Flight::getPrice)
-                .average()
-                .orElse(0.0));
+            SingleAnalise singleAnalise = new SingleAnalise();
+            singleAnalise.setFlightOrder(flightOrder);
 
-        //Idk maybe just for now like that
-        singleAnalise.setCabin(kiwiData.getData()
-                .get(0).getRoute().get(0)
-                .getFareCategory());
+            //Calculate average price
+            singleAnalise.setAveragePrice(kiwiData.getData().stream()
+                    .mapToDouble(Flight::getPrice)
+                    .average()
+                    .orElse(0.0));
 
-        singleAnalise.setAmount(kiwiData.getResults());
+            //Idk maybe just for now like that
+            singleAnalise.setCabin(kiwiData.getData()
+                    .get(0).getRoute().get(0)
+                    .getFareCategory());
 
-        //Offers in KiwiData are sorted so we can just take first and last offer
-        singleAnalise.setBestOffer(
-                flightService.add(
-                        kiwiData.getData().get(0)
-                )
-        );
-        singleAnalise.setWorstOffer(
-                flightService.add(
-                        kiwiData.getData().get(kiwiData.getData().size() - 1)
-                )
-        );
-        singleAnaliseRepository.save(singleAnalise);
+            singleAnalise.setAmount(kiwiData.getResults());
+
+            //Offers in KiwiData are sorted so we can just take first and last offer
+            singleAnalise.setBestOffer(
+                    flightService.add(
+                            kiwiData.getData().get(0)
+                    )
+            );
+            singleAnalise.setWorstOffer(
+                    flightService.add(
+                            kiwiData.getData().get(kiwiData.getData().size() - 1)
+                    )
+            );
+            singleAnaliseRepository.save(singleAnalise);
+        }
     }
 
     // TODO - remove
