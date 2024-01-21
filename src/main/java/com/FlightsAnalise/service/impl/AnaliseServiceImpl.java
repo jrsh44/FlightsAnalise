@@ -1,6 +1,5 @@
 package com.FlightsAnalise.service.impl;
 
-import com.FlightsAnalise.exceptions.GotNullException;
 import com.FlightsAnalise.model.*;
 import com.FlightsAnalise.model.receivedJson.Flight;
 import com.FlightsAnalise.model.receivedJson.KiwiData;
@@ -60,14 +59,14 @@ public class AnaliseServiceImpl implements AnaliseService {
                     .filter(s -> s.getFlightOrder().getId() == flightOrder.getId())
                     .filter(s -> s.getCabin().equals(cabin.label))
                     .min(Comparator.comparing(SingleAnalise::getCreatedAt))
-                    .orElseThrow(() -> new GotNullException("Didn't get any single analise for order:" + flightOrder.getId() + " for cabin:" + cabin));
+                    .get();
 
             SingleAnalise lastAnalise = singleAnaliseRepository.findAll()
                     .stream()
                     .filter(s -> s.getFlightOrder().getId() == flightOrder.getId())
                     .filter(s -> s.getCabin().equals(cabin.label))
                     .max(Comparator.comparing(SingleAnalise::getCreatedAt))
-                    .orElseThrow(() -> new GotNullException("Didn't get any single analise for order:" + flightOrder.getId() + " for cabin:" + cabin));
+                    .get();
 
             //Setting start price (Taking from best offer)
             finalAnalise.setStartPrice(firstAnalise.getBestOffer().getPrice());
@@ -75,15 +74,19 @@ public class AnaliseServiceImpl implements AnaliseService {
             //Setting end price (also from best offer)
             finalAnalise.setEndPrice(lastAnalise.getBestOffer().getPrice());
 
-            //Setting averagePrice (niestety nie do końca average, bo to średnia ze średnich)
-            //Nie da sie inaczej, bo nie ma polaczenia flights <-> flightOrder (flights z Flights Repository)
+            //Setting averagePrice
+            int amountsSum = singleAnaliseRepository.findAll().stream()
+                    .filter(s -> s.getFlightOrder().getId() == flightOrder.getId())
+                    .filter(s -> s.getCabin().equals(cabin.label))
+                    .mapToInt(SingleAnalise::getAmount)
+                    .sum();
+
             finalAnalise.setAveragePrice(singleAnaliseRepository.findAll()
                     .stream()
                     .filter(s -> s.getFlightOrder().getId() == flightOrder.getId())
                     .filter(s -> s.getCabin().equals(cabin.label))
-                    .mapToDouble(SingleAnalise::getAveragePrice)
-                    .average()
-                    .orElse(0.0));
+                    .mapToDouble(s -> s.getAveragePrice() * s.getAmount())
+                    .sum() / (double) amountsSum);
 
             //Setting priceChange
             finalAnalise.setPriceChange(finalAnalise.getEndPrice() - finalAnalise.getStartPrice());
