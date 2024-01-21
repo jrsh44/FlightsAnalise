@@ -37,7 +37,6 @@ public class ScheduledAnalise {
         if (testNumber == flightOrder.getNumOfTests()) {
             for (Cabin cabin : Cabin.values()) {
                 scheduledAnaliseService.addFinalAnalise(flightOrder, cabin);
-                logger.info("Final analise for order {} is completed ({})", flightOrder.getId(), cabin);
             }
             scheduledAnaliseService.addReport(flightOrder);
             logger.info("Report for order {} is completed", flightOrder.getId());

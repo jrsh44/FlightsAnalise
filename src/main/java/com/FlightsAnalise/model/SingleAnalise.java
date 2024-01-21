@@ -13,7 +13,6 @@ public class SingleAnalise {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    // Maybe unnecessary
     @ManyToOne
     @JoinColumn(name = "order_id", referencedColumnName = "id")
     private FlightOrder flightOrder;

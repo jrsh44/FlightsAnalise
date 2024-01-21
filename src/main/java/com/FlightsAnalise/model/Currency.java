@@ -8,7 +8,7 @@ public enum Currency {
 
     public final String label;
 
-    private Currency(String label) {
+    Currency(String label) {
         this.label = label;
     }
 
