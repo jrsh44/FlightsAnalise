@@ -265,12 +265,12 @@ public class AnaliseServiceImpl implements AnaliseService {
         //Setting startAmount
         report.setStartAmount(finalAnalyses.stream()
                 .mapToInt(FinalAnalise::getStartAmount)
-                .min().getAsInt());
+                .sum());
 
         //Setting endAmount
         report.setEndAmount(finalAnalyses.stream()
                 .mapToInt(FinalAnalise::getEndAmount)
-                .min().getAsInt());
+                .sum());
 
         //Setting amountChange
         report.setAmountChange(report.getEndAmount() - report.getStartAmount());
