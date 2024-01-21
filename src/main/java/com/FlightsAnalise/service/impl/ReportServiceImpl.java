@@ -64,7 +64,6 @@ public class ReportServiceImpl implements ReportService {
         orderService.delById(id);
     }
 
-    //TODO - remove
     @Override
     public void delAll() {
         reportRepository.deleteAll();

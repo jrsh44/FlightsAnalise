@@ -30,7 +30,6 @@ public class ScheduledAnalise {
         int testNumber = executionCount.incrementAndGet();
 
         for (Cabin cabin : Cabin.values()) {
-            System.out.println(cabin);
             scheduledAnaliseService.addSingleAnalise(flightOrder, cabin);
             logger.info("Analise nr {} for order {} is completed ({})", testNumber, flightOrder.getId(), cabin);
         }

@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AnaliseServiceImpl implements AnaliseService {
@@ -58,7 +57,7 @@ public class AnaliseServiceImpl implements AnaliseService {
             //Setting cabin
             finalAnalise.setCabin(cabin.label);
 
-            //Get first and last analise (Nw czy wgl potrzebny ten throw tu)
+            //Get first and last analise
             SingleAnalise firstAnalise = singleAnaliseRepository.findAll()
                     .stream()
                     .filter(s -> s.getFlightOrder().getId() == flightOrder.getId())
@@ -152,7 +151,7 @@ public class AnaliseServiceImpl implements AnaliseService {
                     .average()
                     .orElse(0.0));
 
-            //Idk maybe just for now like that
+            //Set Cabin
             singleAnalise.setCabin(kiwiData.getData()
                     .get(0).getRoute().get(0)
                     .getFareCategory());
@@ -200,6 +199,7 @@ public class AnaliseServiceImpl implements AnaliseService {
         return singleAnaliseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Couldn't find single analise with ID = " + id));
     }
+
     @Override
     public void deleteSingleAnaliseById(int id) {
         SingleFlight best = getSingleAnaliseById(id).getBestOffer();
