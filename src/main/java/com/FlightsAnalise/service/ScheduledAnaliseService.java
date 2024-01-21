@@ -7,4 +7,6 @@ public interface ScheduledAnaliseService {
     void addFinalAnalise(FlightOrder flightOrder, Cabin cabin);
 
     void addSingleAnalise(FlightOrder flightOrder, Cabin cabin);
+
+    void addReport(FlightOrder flightOrder);
 }
