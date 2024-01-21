@@ -6,6 +6,7 @@ spring:
     username: root
     password: pass
   jpa:
+    # TODO - false in production
     show-sql: true
     hibernate:
       ddl-auto: update

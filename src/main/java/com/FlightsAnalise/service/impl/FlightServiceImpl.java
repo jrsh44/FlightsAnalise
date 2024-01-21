@@ -1,16 +1,17 @@
-package com.FlightsAnalise.service;
+package com.FlightsAnalise.service.impl;
 
 import com.FlightsAnalise.exceptions.ResourceNotFoundException;
 import com.FlightsAnalise.model.SingleFlight;
 import com.FlightsAnalise.model.receivedJson.Flight;
 import com.FlightsAnalise.repository.FlightRepository;
+import com.FlightsAnalise.service.FlightService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class FlightServiceImpl implements FlightService{
+public class FlightServiceImpl implements FlightService {
 
     @Autowired
     private FlightRepository flightRepository;
@@ -49,7 +50,7 @@ public class FlightServiceImpl implements FlightService{
     }
 
     @Override
-    public void delAll(){
+    public void delAll() {
         flightRepository.deleteAll();
     }
 }

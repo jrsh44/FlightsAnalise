@@ -1,31 +1,56 @@
-package com.FlightsAnalise.service;
+package com.FlightsAnalise.service.impl;
 
 import com.FlightsAnalise.model.FlightOrder;
+import com.FlightsAnalise.model.KiwiOrderBuilder;
 import com.FlightsAnalise.model.SingleAnalise;
 import com.FlightsAnalise.model.receivedJson.Flight;
 import com.FlightsAnalise.model.receivedJson.KiwiData;
 import com.FlightsAnalise.repository.SingleAnaliseRepository;
+import com.FlightsAnalise.service.AnaliseService;
+import com.FlightsAnalise.service.FlightService;
+import com.FlightsAnalise.service.KiwiService;
+import com.FlightsAnalise.service.scheduler.ScheduledAnalise;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class AnaliseServiceImpl implements AnaliseService{
+public class AnaliseServiceImpl implements AnaliseService {
 
     @Autowired
     private FlightService flightService;
 
     @Autowired
+    private KiwiService kiwiService;
+
+    @Autowired
     private SingleAnaliseRepository singleAnaliseRepository;
 
     @Override
-    public List<SingleAnalise> getAllSingleAnalise() {
-        return singleAnaliseRepository.findAll();
+    public void setAnalise(FlightOrder flightOrder) {
+        new ScheduledAnalise(flightOrder, this);
+    }
+
+    // TODO - FINAL ANALISE
+    @Override
+    public void addFinalAnalise(FlightOrder flightOrder) {
+        System.out.println("FINAL ANALISE");
     }
 
     @Override
-    public SingleAnalise addSingleAnalise(FlightOrder flightOrder, KiwiData kiwiData) {
+    public void addSingleAnalise(FlightOrder flightOrder) {
+
+        KiwiData kiwiData = kiwiService.search(new KiwiOrderBuilder(
+                flightOrder.getFlyFrom(),
+                flightOrder.getFlyTo(),
+                flightOrder.getDateFrom(),
+                flightOrder.getDateTo(),
+                flightOrder.getNumOfTests(),
+                flightOrder.getTestTimeGap())
+                .adults(flightOrder.getAdults())
+                .children(flightOrder.getChildren()));
+
         SingleAnalise singleAnalise = new SingleAnalise();
         singleAnalise.setFlightOrder(flightOrder);
 
@@ -53,11 +78,19 @@ public class AnaliseServiceImpl implements AnaliseService{
                         kiwiData.getData().get(kiwiData.getData().size() - 1)
                 )
         );
-        return singleAnaliseRepository.save(singleAnalise);
+        singleAnaliseRepository.save(singleAnalise);
     }
 
+    // TODO - remove
+    @Override
+    public List<SingleAnalise> getAllSingleAnalise() {
+        return singleAnaliseRepository.findAll();
+    }
+
+    // TODO - remove
     @Override
     public void deleteAllSingleAnalise() {
         singleAnaliseRepository.deleteAll();
     }
 }
+

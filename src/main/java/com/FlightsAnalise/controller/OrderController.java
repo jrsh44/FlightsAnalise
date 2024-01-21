@@ -1,6 +1,5 @@
 package com.FlightsAnalise.controller;
 
-import com.FlightsAnalise.client.KiwiClient;
 import com.FlightsAnalise.model.FlightOrder;
 import com.FlightsAnalise.model.KiwiOrderBuilder;
 import com.FlightsAnalise.model.SingleAnalise;
@@ -43,7 +42,7 @@ public class OrderController {
     }
 
     @DeleteMapping("orders")
-    public ResponseEntity<Void> deleteAllOrders(){
+    public ResponseEntity<Void> deleteAllOrders() {
         orderService.delAll();
         return ResponseEntity.ok().build();
     }
@@ -69,22 +68,24 @@ public class OrderController {
     }
 
     @DeleteMapping("flights")
-    public ResponseEntity<Void> deleteAllFlights(){
+    public ResponseEntity<Void> deleteAllFlights() {
         flightService.delAll();
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("flights")
-    public ResponseEntity<SingleFlight> addFlight(@RequestBody FlightOrder flightOrder){
+    public ResponseEntity<SingleFlight> addFlight(@RequestBody FlightOrder flightOrder) {
         // For now it gets first (the chepeast) flight
         return ResponseEntity.ok(flightService.add(
                 kiwiService.search(new KiwiOrderBuilder(
-                        flightOrder.getFlyFrom(),
-                        flightOrder.getFlyTo(),
-                        flightOrder.getDateFrom(),
-                        flightOrder.getDateTo())
-                        .adults(flightOrder.getAdults())
-                        .children(flightOrder.getChildren()))
+                                flightOrder.getFlyFrom(),
+                                flightOrder.getFlyTo(),
+                                flightOrder.getDateFrom(),
+                                flightOrder.getDateTo(),
+                                flightOrder.getNumOfTests(),
+                                flightOrder.getTestTimeGap())
+                                .adults(flightOrder.getAdults())
+                                .children(flightOrder.getChildren()))
                         .getData().get(0)
         ));
     }
@@ -94,31 +95,16 @@ public class OrderController {
     private AnaliseService analiseService;
 
     @GetMapping("analyses1")
-    public ResponseEntity<List<SingleAnalise>> getAllSingleAnalyses(){
+    public ResponseEntity<List<SingleAnalise>> getAllSingleAnalyses() {
         return ResponseEntity.ok(analiseService.getAllSingleAnalise());
     }
 
     @DeleteMapping("analyses1")
-    public ResponseEntity<Void> deleteAllSingleAnalyses(){
+    public ResponseEntity<Void> deleteAllSingleAnalyses() {
         analiseService.deleteAllSingleAnalise();
         //Delete also this bcs if there are no analyses there shouldn't be any flights in flight repo
         flightService.delAll();
         return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("analyses1/{id}")
-    public ResponseEntity<SingleAnalise> addSingleAnalise(@PathVariable(value = "id") Integer id){
-        FlightOrder flightOrder = orderService.getById(id);
-        return ResponseEntity.ok(analiseService.addSingleAnalise(
-                flightOrder,
-                kiwiService.search(new KiwiOrderBuilder(
-                        flightOrder.getFlyFrom(),
-                        flightOrder.getFlyTo(),
-                        flightOrder.getDateFrom(),
-                        flightOrder.getDateTo())
-                        .adults(flightOrder.getAdults())
-                        .children(flightOrder.getChildren()))
-        ));
     }
 }
 
