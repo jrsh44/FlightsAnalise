@@ -1,5 +1,6 @@
 package com.FlightsAnalise.service.scheduler;
 
+import com.FlightsAnalise.model.Cabin;
 import com.FlightsAnalise.model.FlightOrder;
 import com.FlightsAnalise.service.ScheduledAnaliseService;
 import org.slf4j.Logger;
@@ -27,11 +28,19 @@ public class ScheduledAnalise {
 
     private void scheduledTask() {
         int testNumber = executionCount.incrementAndGet();
-        scheduledAnaliseService.addSingleAnalise(flightOrder);
-        logger.info("Analise nr {} for order {} is completed", testNumber, flightOrder.getId());
+
+        for (Cabin cabin : Cabin.values()) {
+            scheduledAnaliseService.addSingleAnalise(flightOrder, cabin);
+            logger.info("Analise nr {} for order {} is completed ({})", testNumber, flightOrder.getId(), cabin);
+        }
+
         if (testNumber == flightOrder.getNumOfTests()) {
-            scheduledAnaliseService.addFinalAnalise(flightOrder);
-            logger.info("Final analise for order {} is completed", flightOrder.getId());
+            for (Cabin cabin : Cabin.values()) {
+                scheduledAnaliseService.addFinalAnalise(flightOrder, cabin);
+                logger.info("Final analise for order {} is completed ({})", flightOrder.getId(), cabin);
+            }
+            scheduledAnaliseService.addReport(flightOrder);
+            logger.info("Report for order {} is completed", flightOrder.getId());
             executorService.shutdown();
         }
 

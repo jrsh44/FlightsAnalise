@@ -24,6 +24,7 @@ public class JsonConverter {
 //                System.out.println("When: " + flight.getUtcDeparture());
 //                System.out.println("For how many nights: " + flight.getNightsInDest());
 //                System.out.println("Price: " + flight.getPrice() + " " +  kiwiData.getCurrency());
+//                System.out.println("Class: " + flight.getRoute().get(0).getFareCategory());
 //                System.out.println();
 //            }
 

@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 public class Report {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
     @OneToOne
@@ -30,10 +29,10 @@ public class Report {
     private double priceChange;
 
     @Column(name = "start_amount")
-    private double startAmount;
+    private int startAmount;
 
     @Column(name = "end_amount")
-    private double endAmount;
+    private int endAmount;
 
     @Column(name = "amount_change")
     private int amountChange;

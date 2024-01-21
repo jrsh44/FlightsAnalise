@@ -17,6 +17,7 @@ public class KiwiOrderBuilder {
     private String dateTo;
     private int numOfTests;
     private int testTimeGap;
+    private Cabin cabin;
     private int adults = 1;
     private int children = 0;
     private Currency curr = Currency.EUR;
@@ -83,6 +84,11 @@ public class KiwiOrderBuilder {
             throw new BadBuilderException("Bad nights range!");
         }
         this.nightsInDestTo = value;
+        return this;
+    }
+
+    public KiwiOrderBuilder cabin(Cabin cabin) {
+        this.cabin = cabin;
         return this;
     }
 

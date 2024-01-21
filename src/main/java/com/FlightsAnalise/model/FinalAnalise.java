@@ -34,10 +34,10 @@ public class FinalAnalise {
     private double priceChange;
 
     @Column(name = "start_amount")
-    private double startAmount;
+    private int startAmount;
 
     @Column(name = "end_amount")
-    private double endAmount;
+    private int endAmount;
 
     @Column(name = "amount_change")
     private int amountChange;
